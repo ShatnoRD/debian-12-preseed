@@ -5,7 +5,7 @@ set -e # Exit immediately if a command exits with a non-zero status
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Default variables
-ISO_PATH="$SCRIPT_DIR/debian-12.8.0-amd64-netinst.iso"
+ISO_PATH="$SCRIPT_DIR/debian-12.10.0-amd64-netinst.iso"
 MOUNT_DIR="$HOME/iso_mount"
 WORK_DIR="$HOME/iso_work"
 GRUB_FILE="$SCRIPT_DIR/grub.cfg"
@@ -27,7 +27,7 @@ check_required_tools() {
 function usage {
     echo "Usage: $0 [options]"
     echo "Options:"
-    echo "  -i, --iso PATH       Source ISO file path (default: ./debian-12.8.0-amd64-netinst.iso)"
+    echo "  -i, --iso PATH       Source ISO file path (default: ./debian-12.10.0-amd64-netinst.iso)"
     echo "  -g, --grub PATH      Custom GRUB config file (default: ./grub.cfg)"
     echo "  -p, --preseed PATH   Custom preseed file (default: ./preseed.cfg)"
     echo "  -k, --key PATH       SSH public key to include (default: ~/.ssh/id_rsa.pub)"

@@ -46,7 +46,7 @@ The script accepts the following options:
 ```bash
 Usage: ./assemble_preseed_iso.sh [options]
 Options:
-  -i, --iso PATH       Source ISO file path (default: ./debian-12.8.0-amd64-netinst.iso)
+  -i, --iso PATH       Source ISO file path (default: ./debian-12.10.0-amd64-netinst.iso)
   -g, --grub PATH      Custom GRUB config file (default: ./grub.cfg)
   -p, --preseed PATH   Custom preseed file (default: ./preseed.cfg)
   -k, --key PATH       SSH public key to include (default: ~/.ssh/id_rsa.pub)
@@ -56,7 +56,7 @@ Options:
 
 Example with custom options:
 ```bash
-./assemble_preseed_iso.sh --iso ~/Downloads/debian-12.8.0-amd64-netinst.iso --key ~/.ssh/custom_key.pub
+./assemble_preseed_iso.sh --iso ~/Downloads/debian-12.10.0-amd64-netinst.iso --key ~/.ssh/custom_key.pub
 ```
 
 ## Ansible Integration
