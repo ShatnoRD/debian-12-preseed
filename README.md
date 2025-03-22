@@ -1,13 +1,6 @@
 # Debian 12 Preseed for Ansible Integration
 
-This repository contains tools to create a customized Debian 12 (Bookworm) installation ISO with preseed configuration. The primary purpose is to initialize new systems that will later be managed by Ansible.
-
-## Overview
-
-The preseed configuration automates the Debian installation process, creating a bare system that's ready for Ansible management. This approach:
-
-1. Installs a minimal Debian 12 system without user interaction, that can be further customized by Ansible
-2. Injects your SSH public key for passwordless Ansible access
+This repository provides an automated solution for creating customized Debian 12 (Bookworm) installation ISOs with UEFI/GPT support through preseed configuration, designed to prepare systems for seamless Ansible adoption with pre-configured SSH key access or temporary password authentication.
 
 ## Prerequisites
 
@@ -29,20 +22,12 @@ The preseed configuration automates the Debian installation process, creating a 
 
 ### Generating the Preseed ISO
 
-Run the `assemble_preseed_iso.sh` script to create a customized installation ISO:
+Run the `assemble_preseed_iso.sh` script to create a customized installation ISO. The script will:
 
-### Customizing the Installation
-
-The default configuration targets **GPT partitioning with UEFI boot**. If your target system has different requirements:
-
-- **GRUB Configuration**: Modify `grub.cfg` to change boot parameters or support legacy BIOS systems
-- **Preseed Configuration**: Edit `preseed.cfg` to adjust:
-  - Partitioning scheme (current setup uses GPT)
-  - Boot method (UEFI vs. BIOS)
-  - Package selection
-  - Network configuration
-
-Both files contain comments explaining the major configuration sections. For legacy BIOS or MBR partitioning, you'll need to modify the partitioning sections in the preseed file.
+1. Extract the contents of the source Debian ISO
+2. Inject your preseed configuration and SSH key
+3. Create a new bootable ISO configured for UEFI/GPT systems
+4. Generate an ISO that performs a completely unattended installation
 
 #### Script Options
 
@@ -64,21 +49,33 @@ Example with custom options:
 ./assemble_preseed_iso.sh --iso ~/Downloads/debian-12.10.0-amd64-netinst.iso --key ~/.ssh/custom_key.pub
 ```
 
-## Ansible Integration
+### Customizing the Installation
 
-This preseed setup is designed to work seamlessly with Ansible:
+The default configuration targets **GPT partitioning with UEFI boot**. If your target system has different requirements:
 
-1. **Initial Access**: The default root password is set to `r00tme` during installation
-2. **Secure Management**: The preseed process injects your SSH public key, allowing Ansible to connect securely
-3. **Password Management**: Your Ansible playbooks should immediately secure the system by changing the default password
+- **GRUB Configuration**: Modify `grub.cfg` to change boot parameters or support legacy BIOS systems
+- **Preseed Configuration**: Edit `preseed.cfg` to adjust:
+  - Partitioning scheme (current setup uses GPT)
+  - Boot method (UEFI vs. BIOS)
+  - Package selection
+  - Network configuration
 
-## Security Note
+Both files contain comments explaining the major configuration sections. For legacy BIOS or MBR partitioning, you'll need to modify the partitioning sections in the preseed file.
 
-The default password (`r00tme`) is only intended for initial setup. Your Ansible playbooks should:
+## Ansible Integration & Security
 
-1. Change the root password
+This preseed setup prepares your systems for immediate Ansible management:
+
+1. **Initial Access**: The default root password is set to `r00tme` during installation, but this is **only intended for initial setup on secure networks (LANs, VPCs, or isolated environments)**
+2. **Secure Management**: The preseed process injects your SSH public key, enabling immediate passwordless Ansible access
+
+Your Ansible playbooks should implement these security best practices:
+
+1. Change the default root password or disable root password login entirely (if enabled)
 2. Create proper user accounts with appropriate privileges
-3. Configure SSH according to your security policies
+3. Configure SSH according to your security policies (key-only authentication, non-standard ports, etc.)
+
+This approach allows for zero-touch provisioning while maintaining a clear path to a secure configuration.
 
 ## Additional Resources
 
