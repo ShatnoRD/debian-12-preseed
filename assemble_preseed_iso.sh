@@ -18,8 +18,16 @@ OUTPUT_ISO="$SCRIPT_DIR/debian-12-preseed.iso"
 check_required_tools() {
     if ! command -v genisoimage >/dev/null 2>&1; then
         echo "Error: genisoimage is not installed. Please install it with:"
-        echo "  sudo apt-get update && sudo apt-get install -y genisoimage"
+        echo "sudo apt-get update && sudo apt-get install -y genisoimage"
         exit 1
+    fi
+
+    if ! command -v isohybrid >/dev/null 2>&1; then
+        echo "Warning: isohybrid is not installed. The ISO may not be bootable as USB."
+        echo "Install with: sudo apt-get update && sudo apt-get install -y syslinux syslinux-utils"
+        HAVE_ISOHYBRID=false
+    else
+        HAVE_ISOHYBRID=true
     fi
 }
 
@@ -129,7 +137,7 @@ mkdir -p "$WORK_DIR/preseed"
 # Copy the GRUB and preseed files to the working directory
 echo "Copying configuration files..."
 cp "$GRUB_FILE" "$WORK_DIR/boot/grub/"
-cp "$PRESEED_FILE" "$WORK_DIR/preseed/"
+cp "$PRESEED_FILE" "$WORK_DIR/"
 
 # Copy and rename the public key
 echo "Copying SSH public key as $DEST_PUB_KEY..."
@@ -144,8 +152,18 @@ genisoimage -o "$OUTPUT_ISO" \
     -no-emul-boot \
     -boot-load-size 4 \
     -boot-info-table \
+    -eltorito-alt-boot \
+    -e boot/grub/efi.img \
+    -no-emul-boot \
     -V "Custom Debian ISO" \
+    -A "Debian Custom Installation" \
     "$WORK_DIR"
+
+# Make the ISO hybrid (bootable as USB)
+if [ "$HAVE_ISOHYBRID" = true ]; then
+    echo "Making ISO hybrid (USB bootable)..."
+    isohybrid --uefi "$OUTPUT_ISO"
+fi
 
 # Clean up
 echo "Cleaning up..."

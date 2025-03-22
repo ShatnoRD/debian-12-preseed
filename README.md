@@ -16,9 +16,14 @@ The preseed configuration automates the Debian installation process, creating a 
    sudo apt-get update && sudo apt-get install -y genisoimage
    ```
 
-2. **Debian netinst ISO**: Download the Debian 12 netinst ISO from the [Debian download page](https://www.debian.org/download) if not using the included one
+2. **Install isohybrid**: This tool is required to make the ISO bootable as a USB device with UEFI support
+   ```bash
+   sudo apt-get update && sudo apt-get install -y syslinux syslinux-utils
+   ```
 
-3. **SSH key pair**: Generate or use an existing key pair for Ansible automation
+3. **Debian netinst ISO**: Download the Debian 12 netinst ISO from the [Debian download page](https://www.debian.org/download) if not using the included one
+
+4. **SSH key pair**: Generate or use an existing key pair for Ansible automation
 
 ## Usage
 
